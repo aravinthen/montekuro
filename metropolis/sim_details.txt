@@ -1,0 +1,10 @@
+Simulation of Lennard-Jones liquid.
+Sigma: 					1.000000
+Epsilon: 				1.000000
+Lennard-Jones Cutoff: 			2.500000
+Volume: 				125.000000
+Number of atoms: 			-843352136
+Temperature: 				1.000000
+Number of successful moves: 		4591555984676996221/1068560142
+Average energy (initial): 		-809666169.364333
+Average energy (final): 		-0.000000

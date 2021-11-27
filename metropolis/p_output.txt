@@ -1,2 +1,0 @@
-ID		X		Y		Z		Energy
-								0.000000

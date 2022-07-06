@@ -5,6 +5,16 @@
 #include "lib.h"
 #include "math.h"
 
+int prand(int total){
+  // produced a random number from 0 to 1
+  return (rand() % (total + 1)); ;
+}
+
+double urand(){
+  // produced a random number from 0 to 1
+  return (double)rand() / (double)((unsigned) RAND_MAX + 1) ;
+}
+
 double system_energy(struct particle system[],
 		     struct type_matrix types,
 		     int num_parts,

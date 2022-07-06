@@ -13,19 +13,46 @@ double particle_move(struct particle system[],
 		     double cutoff,
 		     double xrange, double yrange, double zrange){
   
-  // Moves a particle with |system|, then alculates the associated change
+  // Moves a particle with |system|, then calculates the associated change
   // in energy of the move.
   
   double newx, newy, newz;
   double norm;
+  double old_energy=0.0;
   double energy=0.0;
+  double cx, cy, cz; // current particle position
   double nx, ny, nz; // new particle position
   double px, py, pz; // particles being sumbed over
   double dx, dy, dz; // change in position
   double r; // normed distance
   int nspec = system[label].species; // species of the labelled particle
-  double sig, eps;  
+  double sig, eps;
+
+  cx = system[label].x;
+  cy = system[label].y;
+  cz = system[label].z;
   
+  for (int i=0;i<nump;i++){
+    if (i!=label){
+      sig = types.sigma[system[i].species][nspec];
+      eps = types.epsilon[system[i].species][nspec];
+
+      // correct new positon for periodicity
+      px = fmod(system[i].x + 2*xrange, xrange);
+      py = fmod(system[i].y + 2*yrange, yrange);
+      pz = fmod(system[i].z + 2*zrange, yrange);
+
+      dx = px-cx;
+      dy = py-cy;
+      dz = pz-cz;
+      r = sqrt(dx*dx + dy*dy + dz*dz);
+      
+      if (r < cutoff){	
+	old_energy += 4*eps*(pow((sig/r), 12) - pow((sig/r), 6));
+      }      
+    }
+  }
+
   // generate position vector
   newx = (double)rand()/RAND_MAX;
   newy = (double)rand()/RAND_MAX;
@@ -69,6 +96,6 @@ double particle_move(struct particle system[],
     }
   }
 
-  return energy;
+  return energy-old_energy;
   
 }

@@ -16,19 +16,21 @@ int main(void){
 
   // here, we're modelling a binary fluid
   int total = 2*num_parts; // the number of particles in the system
-
   int num_moves = 100;
 
   // the dimensions of the problem
+  double temp = 1.0;
   double xdim = 1.0;
   double ydim = 1.0;
-  double zdim = 1.0;
+  double zdim = 1.0;  
 
-  // energy parameters
+  // parameters
   double cutoff=1.5;
+  double mvd = 0.1;
 
   // Global parameters
-  double energy, new_en;
+  int p;
+  double energy, en_change, rnum, weight;
   
   // initialize the type matrix.
 
@@ -53,29 +55,48 @@ int main(void){
   for (int j=num_parts; j<total; j++){
     add_particle(sys, j, 1, xdim, ydim, zdim);
   }
+
+
+  double test_en;
+  // calculate the initial energy
+  energy = system_energy(sys,
+			 type_data,
+			 total,
+			 cutoff,
+			 xdim, ydim, zdim);
   
   // assign the system particles to the test system
   for (int k=0; k<num_moves; k++){
+    // pick a random particle
+    p = prand(total);
+    
     // assign the system in use to the test system
     copy_system(test, sys, total);
-    
-    // move only the test system!
-    new_en = particle_move(test,
-			   type_data,
-			   2,
-			   1.0,
-			   total,
-			   cutoff,
-			   xdim, ydim, zdim);
-    
-    // calcuate the energy of the test system
-    energy = system_energy(test,
-			   type_data,
-			   total,
-			   cutoff,
-			   xdim, ydim, zdim);
 
-    printf("%f %f\n", energy, new_en);
+    // move only the test system!
+    //    en_change = particle_move(test,
+    particle_move(test,
+		  type_data,
+		  p,
+		  mvd,
+		  total,
+		  cutoff,
+		  xdim, ydim, zdim);
+    
+    rnum = urand();
+    test_en = system_energy(test,
+			    type_data,
+			    total,
+			    cutoff,
+			    xdim, ydim, zdim);
+    
+    weight = exp(-(test_en - energy)/(kb*temp));
+
+    if (weight > rnum){ 
+      copy_system(sys, test, total);
+      energy = test_en;
+    }
+    printf("%f\n", energy);
   };
   
   printf("Success!\n");

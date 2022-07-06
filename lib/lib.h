@@ -7,6 +7,7 @@
 #include <math.h>
 
 #define pi 3.14159
+#define kb 1
 
 // --------------------------------------------------------------------------
 struct type_matrix {
@@ -36,6 +37,9 @@ double particle_move(struct particle system[],
 		     int nump,
 		     double cutoff,
 		     double xrange, double yrange, double zrange);
+
+double urand();
+int prand(int total);
 
 double system_energy(struct particle system[],
 		     struct type_matrix types,

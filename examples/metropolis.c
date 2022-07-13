@@ -29,7 +29,7 @@ int main(void){
   double mvd = 0.1;
 
   // Global parameters
-  int p;
+  int p; // random number for particles
   double energy, en_change, rnum, weight;
   
   // initialize the type matrix.
@@ -75,13 +75,13 @@ int main(void){
 
     // move only the test system!
     //    en_change = particle_move(test,
-    particle_move(test,
-		  type_data,
-		  p,
-		  mvd,
-		  total,
-		  cutoff,
-		  xdim, ydim, zdim);
+    en_change = particle_move(test,
+			      type_data,
+			      p,
+			      mvd,
+			      total,
+			      cutoff,
+			      xdim, ydim, zdim);
     
     rnum = urand();
     test_en = system_energy(test,
@@ -92,11 +92,13 @@ int main(void){
     
     weight = exp(-(test_en - energy)/(kb*temp));
 
+    printf(" en_change = %f\n naive = %f\n\n", en_change, test_en - energy);
+    
     if (weight > rnum){ 
       copy_system(sys, test, total);
       energy = test_en;
     }
-    printf("%f\n", energy);
+    //    printf("%f\n", energy);
   };
   
   printf("Success!\n");

@@ -22,12 +22,12 @@ double particle_move(struct particle system[],
   double energy=0.0;
   double cx, cy, cz; // current particle position
   double nx, ny, nz; // new particle position
-  double px, py, pz; // particles being sumbed over
+  double px, py, pz; // particles being sumed over
   double dx, dy, dz; // change in position
   double r; // normed distance
-  int nspec = system[label].species; // species of the labelled particle
   double sig, eps;
-
+  
+  int nspec = system[label].species; // species of the labelled particle  
   cx = system[label].x;
   cy = system[label].y;
   cz = system[label].z;
@@ -40,7 +40,7 @@ double particle_move(struct particle system[],
       // correct new positon for periodicity
       px = fmod(system[i].x + 2*xrange, xrange);
       py = fmod(system[i].y + 2*yrange, yrange);
-      pz = fmod(system[i].z + 2*zrange, yrange);
+      pz = fmod(system[i].z + 2*zrange, zrange);
 
       dx = px-cx;
       dy = py-cy;
@@ -73,16 +73,16 @@ double particle_move(struct particle system[],
   system[label].x = nx;
   system[label].y = ny;
   system[label].z = nz;
-
-  for (int i=0;i<nump;i++){
-    if (i!=label){
-      sig = types.sigma[system[i].species][nspec];
-      eps = types.epsilon[system[i].species][nspec];
+  
+  for (int j=0;j<nump;j++){
+    if (j!=label){
+      sig = types.sigma[system[j].species][nspec];
+      eps = types.epsilon[system[j].species][nspec];
 
       // correct new positon for periodicity
-      px = fmod(system[i].x + 2*xrange, xrange);
-      py = fmod(system[i].y + 2*yrange, yrange);
-      pz = fmod(system[i].z + 2*zrange, yrange);
+      px = fmod(system[j].x + 2*xrange, xrange);
+      py = fmod(system[j].y + 2*yrange, yrange);
+      pz = fmod(system[j].z + 2*zrange, zrange);
 
       dx = px-nx;
       dy = py-ny;
@@ -95,7 +95,7 @@ double particle_move(struct particle system[],
 
     }
   }
-
   return energy-old_energy;
-  
 }
+
+

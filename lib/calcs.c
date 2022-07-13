@@ -7,7 +7,7 @@
 
 int prand(int total){
   // produced a random number from 0 to 1
-  return (rand() % (total + 1)); ;
+  return (rand() % (total)); ;
 }
 
 double urand(){
@@ -44,7 +44,7 @@ double system_energy(struct particle system[],
       // general rule: (px + 2*xrange) mod xrange
       px = fmod(system[j].x + 2*xrange, xrange);
       py = fmod(system[j].y + 2*yrange, yrange);
-      pz = fmod(system[j].z + 2*zrange, yrange);
+      pz = fmod(system[j].z + 2*zrange, zrange);
 
       dx = px-cx;
       dy = py-cy;

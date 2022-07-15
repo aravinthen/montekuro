@@ -9,14 +9,15 @@
 #include "../lib/lib.h"
 
 int main(void){
+  
   srand(time(0)); // generate seed (this has to be done once per program)
   
-  int num_parts = 5; // the number of particles per type
+  int num_parts = 50; // the number of particles per type
   int num_types = 2; // the number of types
 
   // here, we're modelling a binary fluid
   int total = 2*num_parts; // the number of particles in the system
-  int num_moves = 100;
+  int num_moves = 5000000;
 
   // the dimensions of the problem
   double temp = 1.0;
@@ -25,15 +26,21 @@ int main(void){
   double zdim = 1.0;  
 
   // parameters
-  double cutoff=1.5;
-  double mvd = 0.1;
+  double cutoff = 0.5;
+  double mvd = 0.01;
 
   // Global parameters
   int p; // random number for particles
   double energy, en_change, rnum, weight;
+
+  // File pointers
+  FILE *fp;
+  
+  // ------------------------------------------------------------------------
+  // MONTE CARLO SIMULATION
+  // ------------------------------------------------------------------------
   
   // initialize the type matrix.
-
   struct type_matrix type_data = init_types(num_types);  
   set_sigma(type_data.sigma, 1,1, 1.0);
   set_sigma(type_data.sigma, 0,0, 1.0);
@@ -56,6 +63,8 @@ int main(void){
     add_particle(sys, j, 1, xdim, ydim, zdim);
   }
 
+  // pinfo(sys, total);
+  gnupos(fp, sys, total, "initial");
 
   double test_en;
   // calculate the initial energy
@@ -64,6 +73,8 @@ int main(void){
 			 total,
 			 cutoff,
 			 xdim, ydim, zdim);
+
+  printf("Initial energy: %f\n", energy);  
   
   // assign the system particles to the test system
   for (int k=0; k<num_moves; k++){
@@ -83,26 +94,29 @@ int main(void){
 			      cutoff,
 			      xdim, ydim, zdim);
     
-    rnum = urand();
-    test_en = system_energy(test,
-			    type_data,
-			    total,
-			    cutoff,
-			    xdim, ydim, zdim);
-    
-    weight = exp(-(test_en - energy)/(kb*temp));
-
-    printf(" en_change = %f\n naive = %f\n\n", en_change, test_en - energy);
-    
-    if (weight > rnum){ 
+    rnum = urand();    
+    weight = exp(-en_change/(kb*temp));    
+    if (weight >= rnum){ 
       copy_system(sys, test, total);
-      energy = test_en;
+      energy += en_change;
     }
-    //    printf("%f\n", energy);
-  };
-  
+  }
+
+  test_en = system_energy(sys,
+			  type_data,
+			  total,
+			  cutoff,
+			  xdim, ydim, zdim);
+    
+  printf("Sanity check: %f %f \n", test_en, energy);    
   printf("Success!\n");
-  
-  // free the type matrices.
+
+  gnupos(fp, sys, total, "final");
+   
+  // pinfo(sys, total);
   free_types(type_data);
+  // free the type matrices.
+  
 }
+  
+

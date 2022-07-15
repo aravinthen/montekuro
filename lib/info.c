@@ -17,3 +17,19 @@ void pinfo(struct particle system[], int num){
 	   system[i].z);
   }
 }
+
+// ------------------------------------------------------------------
+// File print methods
+// ------------------------------------------------------------------ 
+void gnupos(FILE*fp, struct particle system[], int num, char fname[]){
+  // prints all the data of the particles within the input system
+  fp = fopen(fname, "w");
+  for (int i=0;i<num;i++){
+    fprintf(fp,
+	    "%f\t%f\t%f\n", 
+	    system[i].x,
+	    system[i].y,
+	    system[i].z);
+  }
+  fclose(fp);
+}

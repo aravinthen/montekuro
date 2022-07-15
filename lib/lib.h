@@ -61,3 +61,5 @@ void add_particle(struct particle system[],
 void copy_system(struct particle system1[],
 		 struct particle system2[],
 		 int total);
+
+void gnupos(FILE*fp, struct particle system[], int num, char fname[]);

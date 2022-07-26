@@ -12,26 +12,29 @@ int main(void){
   
   srand(time(0)); // generate seed (this has to be done once per program)
   
-  int num_parts = 50; // the number of particles per type
+  int num_parts = 5; // the number of particles per type
   int num_types = 2; // the number of types
 
   // here, we're modelling a binary fluid
   int total = 2*num_parts; // the number of particles in the system
-  int num_moves = 5000000;
+  int num_moves = 1000;
 
   // the dimensions of the problem
   double temp = 1.0;
-  double xdim = 1.0;
-  double ydim = 1.0;
-  double zdim = 1.0;  
+  double xdim = 5.0;
+  double ydim = 5.0;
+  double zdim = 5.0;  
 
   // parameters
-  double cutoff = 0.5;
-  double mvd = 0.01;
+  double cutoff = 0.5*xdim;
+  double mvd = 0.0001;
 
   // Global parameters
   int p; // random number for particles
   double energy, en_change, rnum, weight;
+
+  // Monte Carlo statistics
+  int accepted=0;
 
   // File pointers
   FILE *fp;
@@ -93,13 +96,16 @@ int main(void){
 			      total,
 			      cutoff,
 			      xdim, ydim, zdim);
-    
+
     rnum = urand();    
     weight = exp(-en_change/(kb*temp));    
     if (weight >= rnum){ 
       copy_system(sys, test, total);
       energy += en_change;
+      accepted +=1;
     }
+
+    printf("%f\n", energy);
   }
 
   test_en = system_energy(sys,
@@ -108,7 +114,8 @@ int main(void){
 			  cutoff,
 			  xdim, ydim, zdim);
     
-  printf("Sanity check: %f %f \n", test_en, energy);    
+  printf("Sanity check: %f %f \n", test_en, energy);
+  printf("Acceptance rate: %d/%d \n", accepted, num_moves);    
   printf("Success!\n");
 
   gnupos(fp, sys, total, "final");

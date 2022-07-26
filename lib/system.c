@@ -78,3 +78,4 @@ void copy_system(struct particle copy[],
     copy[i].z = original[i].z;
   }
 }
+

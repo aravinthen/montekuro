@@ -63,3 +63,17 @@ void copy_system(struct particle system1[],
 		 int total);
 
 void gnupos(FILE*fp, struct particle system[], int num, char fname[]);
+
+void logfile(FILE*info,
+	     struct particle system[],
+	     int accepted,
+	     int moves,
+	     int total,
+	     int ntypes,
+	     double xlen,
+	     double ylen,
+	     double zlen,
+	     double T,
+	     double step);
+
+int type_count(struct particle system[], int total, int type);

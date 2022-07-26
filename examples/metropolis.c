@@ -37,7 +37,9 @@ int main(void){
   int accepted=0;
 
   // File pointers
-  FILE *fp;
+  FILE *fp; // position files
+  FILE *ep; // energy file
+  FILE *info; // information file
   
   // ------------------------------------------------------------------------
   // MONTE CARLO SIMULATION
@@ -118,11 +120,24 @@ int main(void){
   printf("Acceptance rate: %d/%d \n", accepted, num_moves);    
   printf("Success!\n");
 
-  gnupos(fp, sys, total, "final");
+  gnupos(fp, sys, total, "final");  
    
   // pinfo(sys, total);
-  free_types(type_data);
+
+  logfile(info,
+	  sys,
+	  accepted,
+	  num_moves,
+	  total,
+	  num_types,
+	  xdim,
+	  ydim,
+	  zdim,
+	  temp,
+	  mvd);
+
   // free the type matrices.
+  free_types(type_data);
   
 }
   

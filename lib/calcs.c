@@ -21,8 +21,6 @@ double system_energy(struct particle system[],
 		     double cutoff,
 		     double xrange, double yrange, double zrange){  
   // calculate the total system energy.
-  // [P] THIS OUGHT TO BE PARALLELISED.
-
   double cx, cy, cz; // current particle
   double px, py, pz; // next particle
   double dx, dy, dz; // differences between particles

@@ -12,22 +12,21 @@ int main(void){
   
   srand(time(0)); // generate seed (this has to be done once per program)
   
-  int num_parts = 5; // the number of particles per type
+  int num_parts = 100; // the number of particles per type
   int num_types = 2; // the number of types
 
   // here, we're modelling a binary fluid
   int total = 2*num_parts; // the number of particles in the system
-  int num_moves = 1000;
 
   // the dimensions of the problem
-  double temp = 1.0;
-  double xdim = 5.0;
-  double ydim = 5.0;
-  double zdim = 5.0;  
+  double temp = 1.00;
+  double xdim = 10.0;
+  double ydim = xdim;
+  double zdim = xdim;  
 
   // parameters
   double cutoff = 0.5*xdim;
-  double mvd = 0.0001;
+  double mvd = 0.0005;
 
   // Global parameters
   int p; // random number for particles
@@ -40,20 +39,31 @@ int main(void){
   FILE *fp; // position files
   FILE *ep; // energy file
   FILE *info; // information file
-  
+
+  // move details
+  int num_moves = 1000;
+  int every = 10;
+  int after = 500;
+
   // ------------------------------------------------------------------------
   // MONTE CARLO SIMULATION
   // ------------------------------------------------------------------------
   
   // initialize the type matrix.
-  struct type_matrix type_data = init_types(num_types);  
+  struct type_matrix type_data = init_types(num_types);
+  // initialize the energy data vector
+  struct energy_data ehis = energy_his(num_moves, every, after);  
+  
+  // initialize the energy storage
+  //  double en_data[(num_moves-after)/every] = {0.0};  
+  
   set_sigma(type_data.sigma, 1,1, 1.0);
   set_sigma(type_data.sigma, 0,0, 1.0);
   set_sigma(type_data.sigma, 1,0, 1.0);
 
-  set_epsilon(type_data.epsilon, 1,1, 1.0);
-  set_epsilon(type_data.epsilon, 0,0, 0.5);
-  set_epsilon(type_data.epsilon, 1,0, 0.2);
+  set_epsilon(type_data.epsilon, 1, 1, 1.0);
+  set_epsilon(type_data.epsilon, 0, 0, 1.0);
+  set_epsilon(type_data.epsilon, 1, 0, 1.0);
 
   // the system: all particle information is contained here.
   struct particle sys[total];
@@ -79,7 +89,7 @@ int main(void){
 			 cutoff,
 			 xdim, ydim, zdim);
 
-  printf("Initial energy: %f\n", energy);  
+  printf("Initial energy: %f\n", energy);
   
   // assign the system particles to the test system
   for (int k=0; k<num_moves; k++){
@@ -107,7 +117,9 @@ int main(void){
       accepted +=1;
     }
 
-    printf("%f\n", energy);
+    // automatically adds energy data    
+    add_en(ehis, k, energy);
+    
   }
 
   test_en = system_energy(sys,
@@ -136,9 +148,14 @@ int main(void){
 	  temp,
 	  mvd);
 
+  for (int i=0;i<10;i++){
+    printf("%f\n", ehis.history[i]);
+  }
+
   // free the type matrices.
   free_types(type_data);
-  
+  free_energy(ehis);
+  return 0;
 }
   
 

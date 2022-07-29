@@ -27,8 +27,17 @@ struct particle {
   double z;  // z coordinate
 };
 
+struct energy_data {
+  int num_moves;
+  int every;
+  int after;
+  int point;
+  double * history;
+};
+
 // --------------------------------------------------------------------------
 struct type_matrix init_types(int num_types);
+struct energy_data energy_his(int num_moves, int every, int after);
 
 double particle_move(struct particle system[],
 		     struct type_matrix types,
@@ -53,6 +62,7 @@ void pinfo(struct particle system[],
 void set_sigma(double * sigmatrix[] , int i, int j, double val);
 void set_epsilon(double * epsmatrix[] , int i, int j, double val);
 void free_types(struct type_matrix types);
+void free_energy(struct energy_data energy);
 
 void add_particle(struct particle system[],
 		  int label, int type, 
@@ -77,3 +87,5 @@ void logfile(FILE*info,
 	     double step);
 
 int type_count(struct particle system[], int total, int type);
+
+void add_en(struct energy_data edata, int k, double energy);

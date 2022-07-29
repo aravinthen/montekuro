@@ -71,3 +71,38 @@ void logfile(FILE*info,
   fprintf(info, "Acceptance rate: (%d/%d) %f\n", accepted, moves, (float)accepted/moves);
   fclose(info);
 }
+
+// Storing all the energy values in a single vector
+struct energy_data energy_his(int num_moves, int every, int after){
+  struct energy_data edata;
+  int vals;
+  vals = (num_moves - after)/every;
+ 
+  edata.num_moves = num_moves;
+  edata.every = every;
+  edata.after = after;
+  edata.point = 0;
+
+  if (after > num_moves){
+    printf("Your after variable is larger than the total number of moves.\n");
+    exit(1);
+  }
+
+  edata.history = malloc(sizeof(double)*vals);
+  for (int i=0;i<vals;i++){
+    edata.history[i]=0.0;
+  }
+  
+  return edata;
+}
+
+void add_en(struct energy_data edata, int k, double energy){
+  if (k >= edata.after && k%edata.every==0){
+    edata.history[edata.point] = energy;
+    edata.point++;
+  }
+}
+
+void free_energy(struct energy_data energy){
+  free(energy.history);
+}

@@ -27,6 +27,7 @@ int main(void){
   // parameters
   double cutoff = 0.5*xdim;
   double mvd = 0.0005;
+  double tol = 5e-3;
 
   // Global parameters
   int p; // random number for particles
@@ -41,9 +42,9 @@ int main(void){
   FILE *info; // information file
 
   // move details
-  int num_moves = 1000;
-  int every = 10;
-  int after = 500;
+  int num_moves = 1000000;
+  int every = 1;
+  int after = 1000;
 
   // ------------------------------------------------------------------------
   // MONTE CARLO SIMULATION
@@ -92,7 +93,7 @@ int main(void){
   printf("Initial energy: %f\n", energy);
   
   // assign the system particles to the test system
-  for (int k=0; k<num_moves; k++){
+  for (int k=0; k<=num_moves; k++){
     // pick a random particle
     p = prand(total);
     
@@ -117,25 +118,17 @@ int main(void){
       accepted +=1;
     }
 
-    // automatically adds energy data    
+    // automatically adds energy data to history
     add_en(&ehis, k, energy);
     
   }
 
-  test_en = system_energy(sys,
-			  type_data,
-			  total,
-			  cutoff,
-			  xdim, ydim, zdim);
-    
-  printf("Sanity check: %f %f \n", test_en, energy);
-  printf("Acceptance rate: %d/%d \n", accepted, num_moves);    
-  printf("Success!\n");
-
-  gnupos(fp, sys, total, "final");  
-   
-  // pinfo(sys, total);
-
+  // SANITY CHECK
+  sanity_check(sys, energy, tol, type_data, total, cutoff, xdim, ydim, zdim);
+  
+  // print final positions of particles to visualise
+  gnupos(fp, sys, total, "final");
+  
   logfile(info,
 	  sys,
 	  accepted,
@@ -148,9 +141,7 @@ int main(void){
 	  temp,
 	  mvd);
 
-  for (int i=0;i<10;i++){
-    printf("%f\n", ehis.history[i]);
-  }
+  dump_en(&ehis, ep, "energy.txt");
 
   // free the type matrices.
   free_types(type_data);

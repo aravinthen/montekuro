@@ -89,3 +89,16 @@ void logfile(FILE*info,
 int type_count(struct particle system[], int total, int type);
 
 void add_en(struct energy_data * edata, int k, double energy);
+
+void dump_en(struct energy_data * edata,
+	     FILE*en,
+	     char fname[]);
+
+int sanity_check(struct particle system[],
+		 double final_en,
+		 double tol,
+		 struct type_matrix type_data,
+		 int total,
+		 double cutoff,
+		 double xdim, double ydim, double zdim);
+

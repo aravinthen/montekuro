@@ -59,3 +59,30 @@ double system_energy(struct particle system[],
   return total_en;
   
 }
+
+int sanity_check(struct particle system[],
+		 double final_en,
+		 double tol,
+		 struct type_matrix type_data,
+		 int total,
+		 double cutoff,
+		 double xdim, double ydim, double zdim){
+  // Check if the energies are reasonable.
+  double test_en;
+  test_en = system_energy(system,
+			  type_data,
+			  total,
+			  cutoff,
+			  xdim, ydim, zdim);
+    
+  printf("Sanity check: %f %f \n", test_en, final_en);
+
+  if (labs(test_en-final_en) < tol){
+    printf("Success!\n");
+    return 0;
+  } else {
+    printf("You might want to check your parameters.\n");
+    return 1;
+  }
+
+}

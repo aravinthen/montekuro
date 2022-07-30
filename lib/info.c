@@ -103,6 +103,20 @@ void add_en(struct energy_data * edata, int k, double energy){
   }
 }
 
+void dump_en(struct energy_data * edata,
+	     FILE*en,
+	     char fname[]){
+  en = fopen(fname, "w");
+  
+  int proper_step;      
+  for (int i=0;i<edata->point;i++){
+    proper_step = edata->after + i*edata->every;
+    fprintf(en, "%d\t%f\n", proper_step, edata->history[i]);
+  }
+  
+  fclose(en);
+}
+
 void free_energy(struct energy_data energy){
   free(energy.history);
 }

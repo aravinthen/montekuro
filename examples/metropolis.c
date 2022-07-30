@@ -118,7 +118,7 @@ int main(void){
     }
 
     // automatically adds energy data    
-    add_en(ehis, k, energy);
+    add_en(&ehis, k, energy);
     
   }
 

@@ -88,4 +88,4 @@ void logfile(FILE*info,
 
 int type_count(struct particle system[], int total, int type);
 
-void add_en(struct energy_data edata, int k, double energy);
+void add_en(struct energy_data * edata, int k, double energy);

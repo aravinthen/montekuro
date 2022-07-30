@@ -96,10 +96,10 @@ struct energy_data energy_his(int num_moves, int every, int after){
   return edata;
 }
 
-void add_en(struct energy_data edata, int k, double energy){
-  if (k >= edata.after && k%edata.every==0){
-    edata.history[edata.point] = energy;
-    edata.point++;
+void add_en(struct energy_data * edata, int k, double energy){
+  if (k >= edata->after && k%edata->every==0){
+    edata->history[edata->point] = energy;
+    edata->point= edata->point+1;
   }
 }
 
